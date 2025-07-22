@@ -1,0 +1,263 @@
+1,Gemüse & Pilze,Gemüse & Pilze,34,"0,4","2,8","6,6",15
+2,Gemüse & Pilze,Blumenkohl,22,"0,3","2,5","2,3",15
+3,Gemüse & Pilze,Karotten (roh),41,"0,2","0,9","9,6",30
+4,Gemüse & Pilze,Spinat,23,"0,4","2,9","3,6",15
+5,Gemüse & Pilze,Grünkohl,49,"0,9","4,3","8,8",15
+6,Gemüse & Pilze,Zucchini,17,"0,3","1,2","3,1",15
+7,Gemüse & Pilze,Paprika (rot),31,"0,3","1,0","6,0",15
+8,Gemüse & Pilze,Aubergine,25,"0,2","1,0","5,9",20
+9,Gemüse & Pilze,Kohlrabi,27,"0,1","1,7","6,2",15
+10,Gemüse & Pilze,Rosenkohl,43,"0,3","3,4","9,0",15
+11,Gemüse & Pilze,Tomaten,18,"0,2","0,9","3,9",30
+12,Gemüse & Pilze,Lauch (Porree),61,"0,3","1,5","14,2",15
+13,Gemüse & Pilze,Fenchel,31,"0,2","1,2","7,3",15
+14,Gemüse & Pilze,Chinakohl,16,"0,2","1,2","3,2",12
+15,Gemüse & Pilze,Spargel,20,"0,1","2,2","3,9",15
+16,Gemüse & Pilze,Süßkartoffel,86,"0,1","1,6","20,1",50
+17,Gemüse & Pilze,Kartoffel (mit Schale),77,"0,1","2,1","17,5",65
+18,Gemüse & Pilze,Pastinake,75,"0,3","1,2","18,0",85
+19,Gemüse & Pilze,Mais (roh),86,"1,4","3,3","18,7",65
+20,Gemüse & Pilze,Rote Bete,43,"0,2","1,6","9,6",30
+21,Gemüse & Pilze,Champignons (weiß),15,"0,2","2,2","2,3",15
+22,Gemüse & Pilze,Champignons (braun),22,"0,1","2,5","4,3",15
+23,Gemüse & Pilze,Austernpilze,33,"0,4","3,3","6,1",15
+24,Gemüse & Pilze,Shiitake-Pilze,34,"0,5","2,2","6,8",15
+25,Gemüse & Pilze,Pfifferlinge,38,"0,5","1,5","6,7",15
+26,Gemüse & Pilze,Steinpilze,39,"0,2","3,7","6,7",15
+27,Gemüse & Pilze,Morcheln,31,"0,6","3,1","5,1",15
+28,Obst,Apfel,52,"0,2","0,3","11,4",35
+29,Obst,Banane,89,"0,3","1,1","22,0",47
+30,Obst,Birne,58,"0,1","0,4","15,5",33
+31,Obst,Orange,47,"0,1","0,9","9,2",35
+32,Obst,Erdbeere,32,"0,3","0,7","7,7",40
+33,Obst,Heidelbeere,57,"0,3","0,7","14,5",53
+34,Obst,Himbeere,34,"0,3","1,5","5,4",25
+35,Obst,Kirsche,63,"0,2","1,0","16,0",22
+36,Obst,Pfirsich,42,"0,1","0,9","10,0",35
+37,Obst,Pflaume,46,"0,3","0,7","11,4",40
+38,Obst,Ananas,50,"0,1","0,5","13,0",45
+39,Obst,Mango,60,"0,4","0,8","14,0",51
+40,Obst,Wassermelone,30,"0,2","0,6","8,0",75
+41,Obst,Honigmelone,36,"0,1","0,8","9,0",65
+42,Obst,Grapefruit,42,"0,1","0,8","8,0",25
+43,Obst,Kiwi,61,"0,5","1,1","15,0",50
+44,Obst,Traube (rot),69,"0,2","0,6","17,0",45
+45,Obst,Dattel (getrocknet),277,"0,2","2,0","75,0",54
+46,Obst,Feige (frisch),74,"0,3","0,8","16,0",35
+47,Obst,Aprikose,48,"0,1","1,4","11,0",30
+48,Obst,Avocado,160,"15,0","2,0","9,0",10
+49,Getreide & Getreideprodukte,Weizen (Weichweizen),302,"1,8","10,9","59,5",71
+50,Getreide & Getreideprodukte,Dinkel,338,"2,4","14,6","70,2",45
+51,Getreide & Getreideprodukte,Roggen,323,"1,7","9,5","60,7",34
+52,Getreide & Getreideprodukte,Gerste,324,"2,1","9,8","63,3",28
+53,Getreide & Getreideprodukte,Hafer,349,"7,1","10,7","55,7",55
+54,Getreide & Getreideprodukte,Hirse,360,"3,9","10,6","68,8",71
+55,Getreide & Getreideprodukte,Mais,341,"1,4","9,4","74,3",55
+56,Getreide & Getreideprodukte,Reis (weiß),344,"0,6","6,7","78,9",73
+57,Getreide & Getreideprodukte,Reis (braun),362,"2,7","7,5","76,2",68
+58,Getreide & Getreideprodukte,Quinoa,343,"5,0","13,8","58,5",53
+59,Getreide & Getreideprodukte,Buchweizen,343,"3,4","13,3","71,5",54
+60,Getreide & Getreideprodukte,Amaranth,371,"7,0","13,6","65,3",97
+61,Getreide & Getreideprodukte,Bulgur,342,"1,3","12,3","75,9",46
+62,Getreide & Getreideprodukte,Couscous,376,"0,6","12,8","77,4",65
+63,Getreide & Getreideprodukte,Grünkern,342,"2,7","12,0","63,0",35
+64,Getreide & Getreideprodukte,Weizengrieß,335,"1,0","10,6","72,0",66
+65,Getreide & Getreideprodukte,Polenta (Maisgrieß),350,"1,0","8,0","75,0",68
+66,Getreide & Getreideprodukte,Haferflocken,371,"7,0","13,5","60,0",55
+67,Getreide & Getreideprodukte,Weizenvollkornmehl,340,"2,0","12,0","70,0",60
+68,Getreide & Getreideprodukte,Weißmehl (Type 405),364,"1,0","10,0","76,0",85
+69,Getreide & Getreideprodukte,Reisnudeln,364,"0,6","7,0","80,0",61
+70,Getreide & Getreideprodukte,Udon-Nudeln,138,"0,2","3,0","27,0",62
+71,Getreide & Getreideprodukte,Matzo (Weißmehl),395,"1,0","10,0","84,0",70
+72,Fleisch & Wurstwaren,Rinderfilet,121,"3,5","21,2",0.0,0.0
+73,Fleisch & Wurstwaren,Schweinefilet,106,"2,0","22,0",0.0,0.0
+74,Fleisch & Wurstwaren,Hähnchenbrust,118,"1,9","23,1",0.0,0.0
+75,Fleisch & Wurstwaren,Putenbrust,105,"1,0","24,0",0.0,0.0
+76,Fleisch & Wurstwaren,Lammfilet,178,"8,0","20,0",0.0,0.0
+77,Fleisch & Wurstwaren,Kalbfleisch,125,"3,0","21,0",0.0,0.0
+78,Fleisch & Wurstwaren,Hackfleisch (Rind),208,"15,0","19,0",0.0,0.0
+79,Fleisch & Wurstwaren,Leber (Rind),131,"3,6","20,4","3,9",0.0
+80,Fleisch & Wurstwaren,Wiener Würstchen,301,"27,6","13,9",0.0,0.0
+81,Fleisch & Wurstwaren,Salami,364,"32,6","20,0","0,2",0.0
+82,Fleisch & Wurstwaren,Leberkäse,300,"26,5","15,9","0,3",0.0
+83,Fleisch & Wurstwaren,Fleischwurst,280,"26,0","11,5","<0,5",0.0
+84,Fleisch & Wurstwaren,Krakauer,142,"5,8","21,0",0.0,0.0
+85,Fleisch & Wurstwaren,Bockwurst,283,"25,0","12,0","1,0",0.0
+86,Fleisch & Wurstwaren,Schinken (roh),190,"12,0","20,0",0.0,0.0
+87,Fisch & Meeresfrüchte,Lachs,142,6,20,0,0
+88,Fisch & Meeresfrüchte,Thunfisch,144,5,23,0,0
+89,Fisch & Meeresfrüchte,Makrele,180,11.6,18.8,0,0
+90,Fisch & Meeresfrüchte,Kabeljau (Dorsch),73,0.4,17.4,0.2,0
+91,Fisch & Meeresfrüchte,Forelle,150,6,23,0,0
+92,Fisch & Meeresfrüchte,Heilbutt,140,3,27,0,0
+93,Fisch & Meeresfrüchte,Hering,201,14.9,16.8,3,0
+94,Fisch & Meeresfrüchte,Sardine,186,11,21,1,0
+95,Fisch & Meeresfrüchte,Aal,281,24.5,15,1.9,0
+96,Fisch & Meeresfrüchte,Garnelen,91,1,19,1,0
+97,Fisch & Meeresfrüchte,Jakobsmuscheln,88,1,17,2,0
+98,Fisch & Meeresfrüchte,Miesmuscheln,172,5,24,7,0
+99,Fisch & Meeresfrüchte,Hummer,90,1,19,1,0
+100,Fisch & Meeresfrüchte,Krabben,92,2.5,17.4,0,0
+101,Fisch & Meeresfrüchte,Seelachs,80,0.8,18.3,0.2,0
+102,Fisch & Meeresfrüchte,Rotbarsch,105,3.6,18.2,0.4,0
+103,Fisch & Meeresfrüchte,Scholle,76,0.8,17.1,0.2,0
+104,Milch & Milchprodukte,"Vollmilch (3,5 % Fett)",63,3.6,3.1,4.6,34
+105,Milch & Milchprodukte,"Magermilch (0,1 % Fett)",35,0.1,3.5,4.9,31
+106,Milch & Milchprodukte,Buttermilch,37,0.5,3.5,4.8,35
+107,Milch & Milchprodukte,"Joghurt (natur, 1,5 %)",46,1.5,4.3,4.7,36
+108,Milch & Milchprodukte,"Joghurt (natur, 3,5 %)",61,3.5,3.5,4.8,36
+109,Milch & Milchprodukte,Quark (Magerstufe),67,0.2,12,3.9,30
+110,Milch & Milchprodukte,Hüttenkäse,98,4.3,11,2,30
+111,Milch & Milchprodukte,Frischkäse (20 % Fett),253,20,8,3,30
+112,Milch & Milchprodukte,Mozzarella,280,17,28,2,30
+113,Milch & Milchprodukte,Emmentaler (45 % Fett),380,29,29,0,0
+114,Milch & Milchprodukte,Gouda (48 % Fett),356,30,25,0,0
+115,Milch & Milchprodukte,Camembert,300,24,20,0,0
+116,Milch & Milchprodukte,Schmelzkäse,310,26,15,3,30
+117,Milch & Milchprodukte,Sahne (30 % Fett),292,30,2,3,30
+118,Milch & Milchprodukte,Crème fraîche (30 %),292,30,2,3,30
+119,Eier & Eiprodukte,Hühnerei (roh),155,11,13,1.1,0
+120,Eier & Eiprodukte,Eiklar,47,0.03,11.1,0.7,0
+121,Eier & Eiprodukte,Eigelb,353,31.9,16.1,0.3,0
+122,Eier & Eiprodukte,Spiegelei,220,18,13,1,0
+123,Hülsenfrüchte & Sojaprodukte,Kichererbsen,306,5.9,19,44.3,30
+124,Hülsenfrüchte & Sojaprodukte,Rote Linsen,343,2,26,57,21
+125,Hülsenfrüchte & Sojaprodukte,Weiße Bohnen,294,1.6,22,47.8,31
+126,Hülsenfrüchte & Sojaprodukte,Gelbe Erbsen,347,1.4,23,60.7,22
+127,Hülsenfrüchte & Sojaprodukte,Sojabohnen,453,23.5,36.8,23.5,15
+128,Hülsenfrüchte & Sojaprodukte,Sojakeimlinge,26,0.5,3.8,1,15
+129,Hülsenfrüchte & Sojaprodukte,Sojajoghurt (pur),59,2.7,4.7,3.2,30
+130,Hülsenfrüchte & Sojaprodukte,Soja-Koteletts,290,1,52,20,15
+131,"Nüsse, Samen & Ölsaaten",Mandeln,612,53,24,5.7,15
+132,"Nüsse, Samen & Ölsaaten",Haselnüsse,655,63.6,16.3,6,15
+133,"Nüsse, Samen & Ölsaaten",Walnüsse,723,70.6,16.1,6.1,15
+134,"Nüsse, Samen & Ölsaaten",Cashewkerne,598,47.1,21,22.2,22
+135,"Nüsse, Samen & Ölsaaten",Erdnüsse,599,48.1,29.8,7.5,15
+136,"Nüsse, Samen & Ölsaaten",Macadamianüsse,720,73,8.8,4,15
+137,"Nüsse, Samen & Ölsaaten",Paranüsse,697,68.1,17,4.1,15
+138,"Nüsse, Samen & Ölsaaten",Pekannüsse,690,72,9.3,4.4,15
+139,"Nüsse, Samen & Ölsaaten",Pistazien,562,45.4,23.8,17.6,15
+140,"Nüsse, Samen & Ölsaaten",Kürbiskerne,559,49.1,35.6,4.7,25
+141,"Nüsse, Samen & Ölsaaten",Sonnenblumenkerne,584,51.5,20.8,11.4,35
+142,"Nüsse, Samen & Ölsaaten",Leinsamen,534,42.2,18.3,28.9,35
+143,"Nüsse, Samen & Ölsaaten",Sesamsamen,573,49.7,17.7,23.4,35
+144,"Nüsse, Samen & Ölsaaten",Chiasamen,486,30.7,16.5,42.1,35
+145,"Nüsse, Samen & Ölsaaten",Hanfsamen,553,48.8,31.6,8.7,35
+146,Öle & Fette,Rapsöl,884,100,0,0,0
+147,Öle & Fette,Olivenöl,884,100,0,0,0
+148,Öle & Fette,Sonnenblumenöl,884,100,0,0,0
+149,Öle & Fette,Leinöl,884,100,0,0,0
+150,Öle & Fette,Kokosöl,892,99,0,0,0
+151,Öle & Fette,Butter,717,81,0.9,0.7,0
+152,Öle & Fette,Margarine,717,81,0.2,0.7,0
+153,Öle & Fette,Ghee,892,99,0,0,0
+154,Öle & Fette,Schmalz (Schwein),900,100,0,0,0
+155,Öle & Fette,Palmöl,884,100,0,0,0
+156,Öle & Fette,Avocadoöl,884,100,0,0,0
+157,Getränke,Wasser (still/sprudelnd),0,0,0,0,0
+158,Getränke,Schwarzer Kaffee (ohne Zucker),2,0,0.3,0,0
+159,Getränke,Tee (ungesüßt),1,0,0,0,0
+160,Getränke,Orangensaft,45,0.2,0.7,10,50
+161,Getränke,Apfelsaft,46,0.1,0.1,11,40
+162,Getränke,Cola,42,0,0,10.6,63
+163,Getränke,Limonade (Zitronenlimonade),40,0,0,10,70
+164,Getränke,Energy-Drink,45,0,0,11,65
+165,Getränke,"Milch (3,5 % Fett)",64,3.5,3.3,4.8,30
+166,Getränke,Sojadrink (ungesüßt),33,1.8,3,0.2,34
+167,Getränke,Bier (Pils),43,0,0.5,3.1,110
+168,Getränke,"Wein (trocken, weiß)",70,0,0.1,1,0
+169,Getränke,"Wein (trocken, rot)",85,0,0.1,2.6,0
+170,Zucker & Süßwaren,Haushaltszucker (Saccharose),400,0,0,100,65
+171,Zucker & Süßwaren,Traubenzucker (Glukose),375,0,0,94,100
+172,Zucker & Süßwaren,Fruchtzucker (Fruktose),400,0,0,100,20
+173,Zucker & Süßwaren,Honig,304,0,0.3,82.4,55
+174,Zucker & Süßwaren,Milchschokolade,535,30,7,59,45
+175,Zucker & Süßwaren,Zartbitterschokolade (70 % Kakao),546,35,7.8,46,23
+176,Zucker & Süßwaren,Gummibärchen,343,0.2,6.9,77,80
+177,Zucker & Süßwaren,Karamellbonbons,382,6,1,85,70
+178,Zucker & Süßwaren,Butterkekse,549,18,7,53,55
+179,Zucker & Süßwaren,Toffifee,522,28.8,6,59,50
+180,Zucker & Süßwaren,Marzipan,480,25,8,50,60
+181,Zucker & Süßwaren,Lakritz,362,0.2,3.7,80,70
+182,Zucker & Süßwaren,Marshmallows,318,0.2,2,81,65
+183,Zucker & Süßwaren,Nougat,550,35,6,50,40
+184,Gewürze & Kräuter,Petersilie (frisch),36,0.8,3,6.3,5
+185,Gewürze & Kräuter,Basilikum (frisch),23,0.6,3.2,2.7,5
+186,Gewürze & Kräuter,Schnittlauch (frisch),30,0.7,3.3,4.4,5
+187,Gewürze & Kräuter,Dill (frisch),43,1.1,3.5,7,5
+188,Gewürze & Kräuter,Oregano (getrocknet),265,4.3,9,68.9,5
+189,Gewürze & Kräuter,Thymian (getrocknet),276,7.4,9.1,63.9,5
+190,Gewürze & Kräuter,Rosmarin (getrocknet),331,15.2,4.9,64.1,5
+191,Gewürze & Kräuter,Zimt (gemahlen),247,1.2,4,81,5
+192,Gewürze & Kräuter,Kurkuma (gemahlen),312,3.2,9.7,67.1,5
+193,Gewürze & Kräuter,Ingwer (frisch),80,0.8,1.8,17.8,5
+194,Fertiggerichte & Convenience-Produkte,Tiefkühlpizza (Salami),250,11,10,27,70
+195,Fertiggerichte & Convenience-Produkte,Instant-Nudelsuppe,450,17,8,60,85
+196,Fertiggerichte & Convenience-Produkte,Kartoffelpüree (Instant),360,6,4,70,85
+197,Fertiggerichte & Convenience-Produkte,Lasagne (Fertigprodukt),150,6,7,15,65
+198,Fertiggerichte & Convenience-Produkte,Chicken Nuggets (gegart),270,17,12,15,60
+199,Fertiggerichte & Convenience-Produkte,Fischstäbchen (gegart),220,12,10,15,60
+200,Fertiggerichte & Convenience-Produkte,Tiefkühl-Gemüsepfanne (asiatisch),90,3,2,12,50
+201,Fertiggerichte & Convenience-Produkte,Fertigsuppe (Tomate),50,1,1,9,45
+202,Fertiggerichte & Convenience-Produkte,Fertigsalat mit Dressing,150,10,2,10,40
+203,Fertiggerichte & Convenience-Produkte,Tiefkühl-Kartoffelgratin,120,5,2,15,70
+204,Backwaren & Teigwaren,Weißbrot,265,3.3,8,49,70
+205,Backwaren & Teigwaren,Vollkornbrot,247,3.5,9,45,50
+206,Backwaren & Teigwaren,Baguette,272,1,8,55,70
+207,Backwaren & Teigwaren,Croissant,406,21,8,45,70
+208,Backwaren & Teigwaren,Brezel,338,3,9,58,70
+209,Backwaren & Teigwaren,Toastbrot (weiß),265,3.3,8,50,85
+210,Backwaren & Teigwaren,Vollkorntoast,247,3.5,9,41,45
+211,Backwaren & Teigwaren,Spaghetti (gekocht),157,0.8,5.8,30.9,50
+212,Backwaren & Teigwaren,Vollkornspaghetti (gekocht),124,1.3,4.8,23,40
+213,Backwaren & Teigwaren,Reisnudeln (gekocht),96,0.2,1.6,22,61
+214,Backwaren & Teigwaren,Linsennudeln (gekocht),167,1.2,12.5,23.5,22
+215,Backwaren & Teigwaren,Gnocchi (gekocht),136,0.3,2.5,28,70
+216,Backwaren & Teigwaren,Lasagne (gekocht),135,2,5,20,60
+217,Backwaren & Teigwaren,"Ravioli (gefüllt, gekocht)",150,3,6,25,65
+218,Snacks & Knabberartikel,Kartoffelchips,536,35,6,50,70
+219,Snacks & Knabberartikel,Erdnussflips,544,36,12,45,55
+220,Snacks & Knabberartikel,Salzstangen,380,3,10,75,70
+221,Snacks & Knabberartikel,Popcorn (gesalzen),387,4.5,12,78,65
+222,Snacks & Knabberartikel,Cracker (gesalzen),450,20,8,60,70
+223,Snacks & Knabberartikel,Studentenfutter,500,30,10,50,50
+224,Snacks & Knabberartikel,Müsliriegel,450,20,6,60,65
+225,Snacks & Knabberartikel,Schokoriegel,500,25,5,60,70
+226,Snacks & Knabberartikel,Gummibärchen,343,0.2,6.9,77,80
+227,Snacks & Knabberartikel,Lakritz,362,0.2,3.7,80,70
+228,Snacks & Knabberartikel,Marshmallows,318,0.2,2,81,65
+229,Snacks & Knabberartikel,Toffifee,522,28.8,6,59,50
+230,Snacks & Knabberartikel,Butterkekse,549,18,7,53,55
+231,Snacks & Knabberartikel,Donuts,452,25,5,51,75
+232,Babynahrung & Kindernahrung,Muttermilch,70,4.2,1.3,7,35
+233,Babynahrung & Kindernahrung,Säuglingsmilchnahrung (Pre),66,3.5,1.3,7,45
+234,Babynahrung & Kindernahrung,Säuglingsmilchnahrung (1er),68,3.6,1.4,7.2,45
+235,Babynahrung & Kindernahrung,Säuglingsmilchnahrung (2er),70,3.8,1.5,7.5,50
+236,Babynahrung & Kindernahrung,Säuglingsmilchnahrung (3er),72,4,1.6,7.8,50
+237,Babynahrung & Kindernahrung,Gemüse-Kartoffel-Fleisch-Brei,80,3,2.5,10,50
+238,Babynahrung & Kindernahrung,Obst-Getreide-Brei,90,2,1.5,16,60
+239,Babynahrung & Kindernahrung,Milch-Getreide-Brei,100,3.5,3,15,65
+240,Babynahrung & Kindernahrung,Reiswaffeln (ungesalzen),380,2.8,7.5,80,85
+241,Babynahrung & Kindernahrung,Babykekse,450,15,6,70,70
+242,Diätprodukte,Diät-Mahlzeitenersatz (Shake),350,10,25,40,40
+243,Diätprodukte,Proteinriegel,400,15,30,35,35
+244,Diätprodukte,Low-Carb-Brot,250,8,15,10,30
+245,Diätprodukte,Eiweißpulver (Molke),380,5,80,5,20
+246,Diätprodukte,Eiweißpulver (Soja),370,6,85,3,20
+247,Diätprodukte,Isotonisches Sportgetränk,250,0,0,60,70
+248,Sonstiges / Zusatzstoffe,Haushaltszucker (Saccharose),400,0,0,100,65
+249,Sonstiges / Zusatzstoffe,Traubenzucker (Glukose),375,0,0,94,100
+250,Sonstiges / Zusatzstoffe,Fruchtzucker (Fruktose),400,0,0,100,20
+251,Sonstiges / Zusatzstoffe,Honig,304,0,0.3,82.4,55
+252,Sonstiges / Zusatzstoffe,Maltodextrin,380,0,0,95,105
+253,Sonstiges / Zusatzstoffe,Inulin,150,0,0,90,10
+254,Sonstiges / Zusatzstoffe,Xylit (Zuckeraustauschstoff),240,0,0,100,7
+255,Sonstiges / Zusatzstoffe,Erythrit (Zuckeraustauschstoff),20,0,0,100,0
+256,Sonstiges / Zusatzstoffe,Aspartam (Süßstoff),400,0,0,100,0
+257,Sonstiges / Zusatzstoffe,Steviolglykoside (Stevia),0,0,0,0,0
+258,Sonstiges / Zusatzstoffe,Olestra (Fettersatzstoff),0,0,0,0,0
+259,Sonstiges / Zusatzstoffe,Simplesse (Fettaustauschstoff),100,0,10,0,0
+260,Sonstiges / Zusatzstoffe,Carrageen (Verdickungsmittel),0,0,0,0,0
+261,Sonstiges / Zusatzstoffe,Guarkernmehl (Verdickungsmittel),350,0,5,80,0
+262,Sonstiges / Zusatzstoffe,Zitronensäure (E330),0,0,0,0,0
+263,Sonstiges / Zusatzstoffe,Natriumglutamat (E621),0,0,0,0,0

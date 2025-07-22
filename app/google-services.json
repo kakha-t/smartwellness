@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "213979259644",
+    "project_id": "smartwellnessapp",
+    "storage_bucket": "smartwellnessapp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:213979259644:android:63043180e34be0a6082d79",
+        "android_client_info": {
+          "package_name": "com.smartwellness"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCm8PXD31v4MgVCvXW2EnP8m2iVTS8B-kM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
