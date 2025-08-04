@@ -149,9 +149,9 @@ Die Ordner- und Paketstruktur ist so aufgebaut, dass **UI**, **Datenzugriff**, *
 ### `com.smartwellness.screens`
 **Zweck:** Komplette Benutzeroberfläche mit Jetpack Compose.
 
-- **`HomeScreen.kt`**  
+- **`HomeScreen.kt`, `Categories.kt`**  
   Einstieg in die App, Willkommensbereich, „Beliebte Kategorien“ (Kacheln, die zu Unterbereichen führen).
-- **`NutritionScreen.kt`, `FitnessScreen.kt`, …**  
+- **`NutritionScreen.kt`, `FitnessScreen.kt`**  
   Thematische Listen/Übersichten. Beispiel: Fitness zeigt Anbieter-Kacheln (Yoga, Aquatraining, Studios).
 - **`PlanScreen.kt`**  
   Interaktiver Planer: Lebensmittel suchen/auswählen, Tages-Tag setzen, Summen (kcal/fett/eiweiß/kh) automatisch berechnen, Plan speichern.
