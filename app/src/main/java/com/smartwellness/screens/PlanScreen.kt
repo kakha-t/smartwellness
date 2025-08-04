@@ -135,7 +135,7 @@ fun PlanScreen(
                                 )
                             }
                         }
-                        Divider(
+                        HorizontalDivider(
                             color = Color(0xFF81C784),
                             thickness = 0.8.dp
                         )
