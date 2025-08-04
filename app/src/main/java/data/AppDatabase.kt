@@ -9,8 +9,8 @@ import com.smartwellness.entities.Plan
 
 @Database(
     entities = [User::class, Lebensmittel::class, Plan::class],
-    version = 5,
-    exportSchema = false
+    version = 5, // ⬅️ Immer anpassen bei Schemaänderungen
+    exportSchema = false // ⬅️ true für Schema-Backups (in Produktion empfohlen)
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao

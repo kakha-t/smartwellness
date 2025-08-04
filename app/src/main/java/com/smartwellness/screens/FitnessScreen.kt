@@ -1,9 +1,10 @@
 package com.smartwellness.screens
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -24,9 +25,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.smartwellness.R
-import androidx.compose.foundation.interaction.*
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FitnessScreen(navController: NavController) {
     val uriHandler = LocalUriHandler.current
@@ -129,7 +129,6 @@ data class FitnessProvider(
     val url: String
 )
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CategorySection(
     title: String,

@@ -24,7 +24,13 @@ import com.smartwellness.data.PlanRepository
 import com.smartwellness.firebase.FirestorePlanService
 import android.util.Log
 
-@OptIn(ExperimentalMaterial3Api::class)
+sealed class LoginUiState {
+    data object Idle : LoginUiState()
+    data object Loading : LoginUiState()
+    data class Success(val userId: Int, val userEmail: String) : LoginUiState()
+    data class Error(val message: String) : LoginUiState()
+}
+
 @Composable
 fun LoginScreen(
     navController: NavController,
@@ -35,8 +41,7 @@ fun LoginScreen(
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var errorMessage by remember { mutableStateOf<String?>(null) }
-    var successMessage by remember { mutableStateOf<String?>(null) }
+    var loginUiState by remember { mutableStateOf<LoginUiState>(LoginUiState.Idle) }
 
     val coroutineScope = rememberCoroutineScope()
     val auth = remember { FirebaseAuth.getInstance() }
@@ -47,9 +52,10 @@ fun LoginScreen(
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Zurück-Button
         Row(
-            modifier = Modifier.fillMaxWidth().clickable { navController.popBackStack() },
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { navController.popBackStack() },
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
@@ -64,15 +70,13 @@ fun LoginScreen(
         Text("Login", fontWeight = FontWeight.Bold, fontSize = 24.sp)
         Spacer(modifier = Modifier.height(16.dp))
 
-        successMessage?.let {
-            Text("✅ $it", color = Color(0xFF4CAF50), fontWeight = FontWeight.Medium)
-            Spacer(modifier = Modifier.height(16.dp))
+        when (val state = loginUiState) {
+            is LoginUiState.Error -> Text("❌ ${state.message}", color = Color.Red)
+            is LoginUiState.Success -> Text("✅ Login erfolgreich!", color = Color(0xFF4CAF50))
+            else -> {}
         }
 
-        errorMessage?.let {
-            Text("❌ $it", color = Color.Red, fontWeight = FontWeight.Medium)
-            Spacer(modifier = Modifier.height(16.dp))
-        }
+        Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
             value = email,
@@ -97,85 +101,67 @@ fun LoginScreen(
             onClick = {
                 coroutineScope.launch {
                     if (email.isBlank() || password.isBlank()) {
-                        errorMessage = "Bitte fülle alle Felder aus!"
-                        successMessage = null
+                        loginUiState = LoginUiState.Error("Bitte fülle alle Felder aus!")
                         return@launch
                     }
 
-                    auth.signInWithEmailAndPassword(email.trim(), password.trim())
-                        .addOnCompleteListener { task ->
-                            if (task.isSuccessful) {
-                                coroutineScope.launch {
-                                    try {
-                                        var user = userDao.getUserByEmail(email.trim())
+                    loginUiState = LoginUiState.Loading
 
-                                        // Falls Benutzer lokal nicht vorhanden ist – versuche aus Firestore zu laden
-                                        if (user == null) {
-                                            val snapshot = FirebaseFirestore.getInstance()
-                                                .collection("users")
-                                                .whereEqualTo("email", email.trim())
-                                                .get()
-                                                .await()
+                    try {
+                        val result = auth.signInWithEmailAndPassword(email.trim(), password.trim()).await()
+                        if (result.user == null) throw Exception("Kein Benutzer gefunden")
 
-                                            if (!snapshot.isEmpty) {
-                                                val doc = snapshot.documents[0]
-                                                val userMap = doc.data
+                        var user = userDao.getUserByEmail(email.trim())
 
-                                                if (userMap == null || userMap["email"] == null) {
-                                                    errorMessage = "Benutzerprofil unvollständig oder fehlerhaft. Bitte registrieren."
-                                                    successMessage = null
-                                                    return@launch
-                                                }
+                        if (user == null) {
+                            val snapshot = FirebaseFirestore.getInstance()
+                                .collection("users")
+                                .whereEqualTo("email", email.trim())
+                                .get()
+                                .await()
 
-                                                val firestoreUserId = (userMap["id"] as? Long)?.toInt() ?: 0
+                            if (!snapshot.isEmpty) {
+                                val doc = snapshot.documents[0]
+                                val userMap = doc.data ?: throw Exception("Daten unvollständig")
 
-                                                if (firestoreUserId == 0) {
-                                                    Log.w("LoginScreen", "⚠️ Firestore-ID fehlt oder ist 0 – mögliche Dateninkonsistenz")
-                                                }
+                                val firestoreUserId = (userMap["id"] as? Long)?.toInt() ?: 0
+                                if (firestoreUserId == 0) Log.w("LoginScreen", "⚠️ Firestore-ID fehlt")
 
-                                                user = User(
-                                                    id = firestoreUserId, // ✅ Feste ID aus Firestore
-                                                    vorname = userMap["vorname"] as? String ?: "Unbekannt",
-                                                    nachname = userMap["nachname"] as? String ?: "Unbekannt",
-                                                    email = userMap["email"] as String,
-                                                    phone = userMap["phone"] as? String ?: "",
-                                                    geburtstag = userMap["geburtstag"] as? String ?: "",
-                                                    password = password.trim()
-                                                )
+                                user = User(
+                                    id = firestoreUserId,
+                                    vorname = userMap["vorname"] as? String ?: "Unbekannt",
+                                    nachname = userMap["nachname"] as? String ?: "Unbekannt",
+                                    email = userMap["email"] as String,
+                                    phone = userMap["phone"] as? String ?: "",
+                                    geburtstag = userMap["geburtstag"] as? String ?: "",
+                                    password = password.trim()
+                                )
 
-                                                userDao.insertUser(user) // ID ist schon festgelegt – Room übernimmt diese direkt
-                                                val planService = FirestorePlanService()
-                                                val plans = planService.loadPlansFromFirebase(user.id, user.email)
-                                                planRepository.insertOrReplacePlans(plans)
-                                                Log.d("LoginSync", "✅ ${plans.size} Pläne aus Firestore in Room gespeichert")
-                                            } else {
-                                                errorMessage = "Benutzerprofil konnte nicht gefunden werden. Bitte registrieren."
-                                                successMessage = null
-                                                return@launch
-                                            }
-                                        }
-
-                                        successMessage = "Login erfolgreich!"
-                                        errorMessage = null
-                                        onLoginSuccess(user.id, user.email)
-                                        navController.navigate(returnTo ?: "plan/${user.id}/${user.email}") {
-                                            popUpTo("login") { inclusive = true }
-                                        }
-                                    } catch (e: Exception) {
-                                        errorMessage = "Fehler beim Laden des Benutzerprofils: ${e.localizedMessage}"
-                                        successMessage = null
-                                    }
-                                }
+                                userDao.insertUser(user)
+                                val plans = FirestorePlanService().loadPlansFromFirebase(user.id, user.email)
+                                planRepository.insertOrReplacePlans(plans)
+                                Log.d("LoginSync", "✅ ${plans.size} Pläne gespeichert")
                             } else {
-                                val message = task.exception?.message ?: "Fehler beim Login"
-                                errorMessage = when {
-                                    message.contains("password", ignoreCase = true) -> "Passwort ist falsch!"
-                                    message.contains("email", ignoreCase = true) -> "E-Mail ist ungültig oder nicht registriert!"
-                                    else -> "Login fehlgeschlagen – bitte Daten prüfen."
-                                }
-                                successMessage = null
+                                throw Exception("Benutzerprofil nicht gefunden")
                             }
                         }
+
+                        loginUiState = LoginUiState.Success(user.id, user.email)
+                        onLoginSuccess(user.id, user.email)
+                        navController.navigate(returnTo ?: "plan/${user.id}/${user.email}") {
+                            popUpTo("login") { inclusive = true }
+                        }
+                    } catch (e: Exception) {
+                        val msg = e.message ?: "Fehler beim Login"
+                        loginUiState = LoginUiState.Error(
+                            when {
+                                msg.contains("password", true) -> "Passwort ist falsch!"
+                                msg.contains("email", true) -> "E-Mail ist ungültig oder nicht registriert!"
+                                msg.contains("auth credential", true) -> "Zugangsdaten sind ungültig oder abgelaufen!"
+                                else -> "Login fehlgeschlagen: $msg"
+                            }
+                        )
+                    }
                 }
             },
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFA3F18F)),

@@ -38,9 +38,7 @@ fun ImpressumScreen(navController: NavController) {
                     }
                 },
                 navigationIcon = {
-                    IconButton(onClick = {
-                        navController.popBackStack()
-                    }) {
+                    IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Zurück",
@@ -61,11 +59,11 @@ fun ImpressumScreen(navController: NavController) {
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.Start
         ) {
-            TextSection(
+            InfoBlock(
                 title = "Angaben gemäß § 5 TMG",
                 text = "Dieses Webprojekt wurde im Rahmen eines Hochschulstudiums erstellt und dient ausschließlich zu Demonstrations- und Präsentationszwecken. Es handelt sich nicht um ein kommerzielles Angebot."
             )
-            TextSection(
+            InfoBlock(
                 title = "Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV",
                 text = """
                     Kakha Tsimakurizde
@@ -77,18 +75,35 @@ fun ImpressumScreen(navController: NavController) {
                     Tel.: +49 123 4567890 (fiktiv)
                 """.trimIndent()
             )
-            TextSection(
+            InfoBlock(
                 title = "Urheberrecht und verwendete Materialien",
                 text = "Die im Projekt verwendeten Texte, Bilder und Gestaltungselemente stammen aus freien Quellen oder öffentlich zugänglichen Webseiten. Es wird keine kommerzielle Nutzung angestrebt. Inhalte dienen rein der Veranschaulichung. Bei irrtümlicher Verwendung bitten wir um Mitteilung – Inhalte werden entfernt."
             )
-            TextSection(
+            InfoBlock(
                 title = "Externe Links",
                 text = "Für externe Links übernehmen wir keine Verantwortung. Für den Inhalt verlinkter Seiten sind ausschließlich deren Betreiber verantwortlich."
             )
-            TextSection(
+            InfoBlock(
                 title = "Hinweis",
                 text = "Dieses Impressum gilt ausschließlich für das studentische Webprojekt „SmartWellness“ und besitzt keine rechtliche Verbindlichkeit im Sinne kommerzieller Telemedienangebote."
             )
         }
     }
+}
+
+@Composable
+fun InfoBlock(title: String, text: String) {
+    Text(
+        text = title,
+        fontWeight = FontWeight.Bold,
+        fontSize = 16.sp,
+        color = Color(0xFF2E7D32),
+        modifier = Modifier.padding(vertical = 4.dp)
+    )
+    Text(
+        text = text,
+        fontSize = 14.sp,
+        color = Color.Black,
+        modifier = Modifier.padding(bottom = 8.dp)
+    )
 }

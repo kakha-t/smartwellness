@@ -2,6 +2,9 @@ package com.smartwellness.screens
 
 import com.smartwellness.R
 
+/**
+ * Repräsentiert eine Kategorie mit Bild, Titel, Beschreibung und Navigationsroute.
+ */
 data class CategoryItem(
     val imageRes: Int,
     val title: String,
@@ -9,6 +12,9 @@ data class CategoryItem(
     val route: String
 )
 
+/**
+ * Liste der Hauptkategorien, die im HomeScreen angezeigt werden.
+ */
 val categoryItems = listOf(
     CategoryItem(
         imageRes = R.drawable.gesunde_ernaehrung,

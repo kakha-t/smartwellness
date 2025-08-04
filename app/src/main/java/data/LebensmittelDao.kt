@@ -1,5 +1,3 @@
-// Datei: data/LebensmittelDao.kt
-
 package com.smartwellness.data
 
 import androidx.room.Dao

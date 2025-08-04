@@ -95,6 +95,30 @@ dependencies {
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-firestore-ktx") // für Tagespläne später
 
+    // Compose UI
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.ui:ui-text")
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    implementation("androidx.compose.ui:ui-graphics")
+
+// Saveable State (für rememberSaveable)
+    implementation("androidx.compose.runtime:runtime-saveable")
+
+// Compose Material 3
+    implementation("androidx.compose.material3:material3")
+
+    // Für Unit-Tests (im test-Ordner)
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("io.mockk:mockk:1.13.12")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
+
+// Für Android- und Compose-Tests (im androidTest-Ordner)
+    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:<deine-Compose-Version>")
+
+
+
 }
 
 apply(plugin = "com.google.gms.google-services")

@@ -11,10 +11,11 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.smartwellness.data.AppDatabase
 import com.smartwellness.data.PlanRepository
-import com.smartwellness.data.entities.Lebensmittel
 import com.smartwellness.data.UserRepository
+import com.smartwellness.data.entities.Lebensmittel
 import com.smartwellness.screens.*
 import kotlinx.coroutines.launch
+import androidx.compose.runtime.saveable.rememberSaveable
 
 @Composable
 fun AppNavigation(
@@ -22,58 +23,68 @@ fun AppNavigation(
     lebensmittelListe: List<Lebensmittel>
 ) {
     val navController = rememberNavController()
-    val planRepository = PlanRepository(db.planDao())
     val coroutineScope = rememberCoroutineScope()
 
-    var userId by remember { mutableStateOf<Int?>(null) }
-    var userEmail by remember { mutableStateOf<String?>(null) }
+    val planRepository = remember { PlanRepository(db.planDao()) }
+    val userRepository = remember { UserRepository(db.userDao()) }
+
+    var userId by rememberSaveable { mutableStateOf<Int?>(null) }
+    var userEmail by rememberSaveable { mutableStateOf<String?>(null) }
 
     Scaffold(
-        bottomBar = { BottomBar(navController, userId) }
+        bottomBar = { BottomBar(navController) }
     ) { innerPadding ->
+
         NavHost(
             navController = navController,
             startDestination = "home",
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable(route = "home") {
+
+            composable("home") {
                 HomeScreen(navController)
             }
-            composable(route = "nutrition") {
+
+            composable("nutrition") {
                 NutritionScreen(navController)
             }
-            composable(route = "fitness") {
+
+            composable("fitness") {
                 FitnessScreen(navController)
             }
-            composable(route = "zugang") {
+
+            composable("zugang") {
                 ZugangScreen(navController)
             }
-            composable(route = "register") {
-                RegisterScreen(navController, userDao = db.userDao())
+
+            composable("register") {
+                RegisterScreen(navController, db.userDao())
             }
-            composable(route = "datenschutz") {
-                DatenschutzScreen(navController = navController)
+
+            composable("datenschutz") {
+                DatenschutzScreen(navController)
             }
-            composable(route = "impressum") {
-                ImpressumScreen(navController = navController)
+
+            composable("impressum") {
+                ImpressumScreen(navController)
             }
+
             composable("more") {
-                MoreScreen(
-                    navController = navController,
-                    userId = userId
-                )
+                MoreScreen(navController, userId)
             }
+
             composable("mein_konto") {
                 MeinKontoScreen(
                     navController = navController,
                     userId = userId,
-                    userRepository = UserRepository(db.userDao()),
+                    userRepository = userRepository,
                     onLogout = {
                         userId = null
                         userEmail = null
                     }
                 )
             }
+
             composable(
                 route = "login?returnTo={returnTo}",
                 arguments = listOf(
@@ -93,18 +104,14 @@ fun AppNavigation(
                     onLoginSuccess = { id, email ->
                         userId = id
                         userEmail = email
-                        if (returnTo != null) {
-                            navController.navigate(returnTo) {
-                                popUpTo("login") { inclusive = true }
-                            }
-                        } else {
-                            navController.navigate("plan/$id/$email") {
-                                popUpTo("login") { inclusive = true }
-                            }
+                        val destination = returnTo ?: "plan/$id/$email"
+                        navController.navigate(destination) {
+                            popUpTo("login") { inclusive = true }
                         }
                     }
                 )
             }
+
             composable(
                 route = "plan/{userId}/{userEmail}",
                 arguments = listOf(
@@ -113,22 +120,23 @@ fun AppNavigation(
                 )
             ) { backStackEntry ->
                 val passedUserId = backStackEntry.arguments?.getInt("userId") ?: -1
-                val userEmail = backStackEntry.arguments?.getString("userEmail") ?: ""
+                val passedUserEmail = backStackEntry.arguments?.getString("userEmail") ?: ""
 
                 PlanScreen(
                     navController = navController,
                     lebensmittelListe = lebensmittelListe,
-                    userEmail = userEmail,
+                    userEmail = passedUserEmail,
                     userId = passedUserId,
                     planRepository = planRepository,
                     onSavePlan = { plan ->
                         coroutineScope.launch {
                             planRepository.insertOrReplacePlan(plan)
-                            println("✅ Plan gespeichert!")
+                            println("✅ Plan gespeichert")
                         }
                     }
                 )
             }
+
             composable(
                 route = "saved_plans/{userId}/{userEmail}",
                 arguments = listOf(
@@ -136,13 +144,13 @@ fun AppNavigation(
                     navArgument("userEmail") { type = NavType.StringType }
                 )
             ) { backStackEntry ->
-                val userId = backStackEntry.arguments?.getInt("userId") ?: -1
-                val userEmail = backStackEntry.arguments?.getString("userEmail") ?: ""
+                val passedUserId = backStackEntry.arguments?.getInt("userId") ?: -1
+                val passedUserEmail = backStackEntry.arguments?.getString("userEmail") ?: ""
 
                 SavedPlansScreen(
                     navController = navController,
-                    userId = userId,
-                    userEmail = userEmail,
+                    userId = passedUserId,
+                    userEmail = passedUserEmail,
                     planRepository = planRepository
                 )
             }

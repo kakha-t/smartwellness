@@ -15,18 +15,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.smartwellness.data.PlanRepository
 import com.smartwellness.data.entities.Lebensmittel
+import com.smartwellness.entities.Plan
+import com.smartwellness.firebase.FirestorePlanService
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import androidx.navigation.NavController
-import com.smartwellness.entities.Plan
-import com.smartwellness.data.PlanRepository
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.ui.text.font.FontWeight
-import com.smartwellness.firebase.FirestorePlanService
+import androidx.compose.foundation.background
+import androidx.compose.ui.platform.testTag
+
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -47,97 +48,122 @@ fun PlanScreen(
     var expandedTag by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
     val focusRequester = remember { FocusRequester() }
-    val coroutineScope = rememberCoroutineScope()
-    val snackbarHostState = remember { SnackbarHostState() }
     val grammFocusRequester = remember { FocusRequester() }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
     var grammFehler by remember { mutableStateOf(false) }
 
-    val tage = listOf(
-        "Montag", "Dienstag", "Mittwoch", "Donnerstag",
-        "Freitag", "Samstag", "Sonntag"
-    )
-
+    val tage = listOf("Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag")
     var filteredLebensmittelListe by remember { mutableStateOf(lebensmittelListe) }
 
     LaunchedEffect(searchQuery) {
         delay(300)
-
-        filteredLebensmittelListe =
-            if (searchQuery.isBlank()) {
-                emptyList()
-            } else if (searchQuery == "*" || searchQuery == " ") {
-                lebensmittelListe.sortedBy { it.produkt.lowercase() }
-            } else {
-                lebensmittelListe
-                    .filter {
-                        it.produkt.contains(searchQuery, ignoreCase = true)
-                    }
-                    .sortedBy { it.produkt.lowercase() }
-            }
-
+        filteredLebensmittelListe = when {
+            searchQuery.isBlank() -> emptyList()
+            searchQuery == "*" || searchQuery == " " -> lebensmittelListe.sortedBy { it.produkt.lowercase() }
+            else -> lebensmittelListe.filter {
+                it.produkt.contains(searchQuery, ignoreCase = true)
+            }.sortedBy { it.produkt.lowercase() }
+        }
         expandedSuchfeld = searchQuery.isNotEmpty()
     }
 
-    val sumKalorien = ausgewaehlt
-        .sumOf { (produkt, gramm) ->
-            ((produkt.kalorien.toFloatOrNull() ?: 0f) * gramm / 100).toDouble()
-        }
-    val sumFett = ausgewaehlt
-        .sumOf { (produkt, gramm) ->
-            ((produkt.fett.toFloatOrNull() ?: 0f) * gramm / 100).toDouble()
-        }
-    val sumEiweiss = ausgewaehlt
-        .sumOf { (produkt, gramm) ->
-            ((produkt.eiweiss.toFloatOrNull() ?: 0f) * gramm / 100).toDouble()
-        }
-    val sumKohlenhydrate = ausgewaehlt
-        .sumOf { (produkt, gramm) ->
-            ((produkt.kohlenhydrate.toFloatOrNull() ?: 0f) * gramm / 100).toDouble()
-        }
+    val sumKalorien = ausgewaehlt.sumOf { (p, g) -> ((p.kalorien.toFloatOrNull() ?: 0f) * g / 100).toDouble() }
+    val sumFett = ausgewaehlt.sumOf { (p, g) -> ((p.fett.toFloatOrNull() ?: 0f) * g / 100).toDouble() }
+    val sumEiweiss = ausgewaehlt.sumOf { (p, g) -> ((p.eiweiss.toFloatOrNull() ?: 0f) * g / 100).toDouble() }
+    val sumKohlenhydrate = ausgewaehlt.sumOf { (p, g) -> ((p.kohlenhydrate.toFloatOrNull() ?: 0f) * g / 100).toDouble() }
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(
                 title = {
-                    Text(
-                        text = "Mein Plan",
-                        style = MaterialTheme.typography.titleLarge.copy(
-                            fontWeight = FontWeight.Bold,
-                            color = Color(0xFF2E7D32)
-                        ),
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = androidx.compose.ui.text.style.TextAlign.Center
-                    )
+                    Text("Mein Plan", fontWeight = FontWeight.Bold, color = Color(0xFF2E7D32), modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
                 },
                 actions = {
                     IconButton(onClick = {
                         navController.navigate("login") {
-                            popUpTo("plan/{userId}/{userEmail}") {
-                                inclusive = true
-                            }
+                            popUpTo("plan/{userId}/{userEmail}") { inclusive = true }
                         }
                     }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.Logout,
-                            contentDescription = "Logout",
-                            tint = Color(0xFF2E7D32)
-                        )
+                        Icon(Icons.AutoMirrored.Filled.Logout, contentDescription = "Logout", tint = Color(0xFF2E7D32))
                     }
                 }
             )
         }
     ) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp)
-            ) {
+        Column(modifier = Modifier.fillMaxSize().padding(innerPadding).padding(16.dp)) {
+
+            if (ausgewaehlt.isEmpty()) {
+                Spacer(modifier = Modifier.height(16.dp)) // sorgt für Abstand
+                Text(
+                    text = "Noch keine Produkte ausgewählt.",
+                    color = Color(0xFFD32F2F),
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier
+                        .padding(bottom = 16.dp) // zusätzlicher Abstand
+                )
+            } else {
+                Text("Ausgewählte Produkte:", color = Color(0xFF2E7D32))
+                LazyColumn(
+                    modifier = Modifier
+                        .heightIn(max = 200.dp)
+                        .testTag("planList")      // für AndroidTest
+                ) {
+                    items(ausgewaehlt) { (p, g) ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 6.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "${p.produkt} - ${"%.1f".format(g)} g - GI ${p.glyk_index}",
+                                modifier = Modifier.weight(1f),
+                                color = Color.Black
+                            )
+                            IconButton(
+                                onClick = { ausgewaehlt.remove(p to g) },
+                                modifier = Modifier.size(24.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Close,
+                                    contentDescription = "Entfernen",
+                                    tint = Color.Red,
+                                    modifier = Modifier.size(16.dp)
+                                )
+                            }
+                        }
+                        Divider(
+                            color = Color(0xFF81C784),
+                            thickness = 0.8.dp
+                        )
+                    }
+                }
+            }
+
+            if (ausgewaehlt.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(16.dp))
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFFE8F5E9)),
+                    elevation = CardDefaults.cardElevation(2.dp)
+                ) {
+                    Column(modifier = Modifier.padding(12.dp)) {
+                        Text("Summierte Werte:", color = Color(0xFF2E7D32), fontWeight = FontWeight.Bold)
+                        Text("Kalorien: ${"%.1f".format(sumKalorien)} kcal")
+                        Text("Fett: ${"%.1f".format(sumFett)} g")
+                        Text("Eiweiß: ${"%.1f".format(sumEiweiss)} g")
+                        Text("Kohlenhydrate: ${"%.1f".format(sumKohlenhydrate)} g")
+                    }
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+
+            Box {
                 OutlinedTextField(
                     value = searchQuery,
                     onValueChange = { searchQuery = it },
@@ -168,212 +194,15 @@ fun PlanScreen(
                     )
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
-
-                if (ausgewaehlt.isEmpty()) {
-                    Text(
-                        text = "Noch keine Produkte ausgewählt.",
-                        color = Color(0xFFD32F2F),
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.padding(vertical = 8.dp)
-                    )
-                }
-
-                if (ausgewaehlt.isNotEmpty()) {
-                    Text(
-                        "Ausgewählte Produkte:",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = Color(0xFF2E7D32)
-                    )
-
-                    LazyColumn {
-                        items(ausgewaehlt) { (produkt, gramm) ->
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 0.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Text(
-                                    text = "${produkt.produkt} - ${gramm} g - GI ${produkt.glyk_index}",
-                                    color = Color.Black
-                                )
-                                IconButton(
-                                    onClick = {
-                                        ausgewaehlt.remove(produkt to gramm)
-                                    },
-                                    modifier = Modifier.size(24.dp)
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Close,
-                                        contentDescription = "Entfernen",
-                                        tint = Color.Red,
-                                        modifier = Modifier.size(16.dp)
-                                    )
-                                }
-                            }
-                            HorizontalDivider(
-                                color = Color(0xFF81C784),
-                                thickness = 0.5.dp,
-                                modifier = Modifier.padding(vertical = 0.dp)
-                            )
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
+                if (expandedSuchfeld && filteredLebensmittelListe.isNotEmpty()) {
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(8.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = Color(0xFFE8F5E9)
-                        )
+                            .padding(top = 56.dp), // Direkt unterhalb des Textfelds
+                        elevation = CardDefaults.cardElevation(8.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color.White)
                     ) {
-                        Column(modifier = Modifier.padding(16.dp)) {
-                            Text("Summierte Werte:", style = MaterialTheme.typography.titleMedium, color = Color(0xFF2E7D32))
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text("Kalorien: ${String.format("%.1f", sumKalorien)} kcal", color = Color.Black)
-                            Text("Fett: ${String.format("%.1f", sumFett)} g", color = Color.Black)
-                            Text("Eiweiß: ${String.format("%.1f", sumEiweiss)} g", color = Color.Black)
-                            Text("Kohlenhydrate: ${String.format("%.1f", sumKohlenhydrate)} g", color = Color.Black)
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-                }
-
-                // === Dieser Block ist jetzt immer sichtbar ===
-                Box {
-                    OutlinedTextField(
-                        value = selectedTag,
-                        onValueChange = {},
-                        enabled = false,
-                        label = { Text("Tag wählen") },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { expandedTag = true },
-                        trailingIcon = {
-                            Icon(
-                                imageVector = Icons.Default.ArrowDropDown,
-                                contentDescription = "Dropdown Icon"
-                            )
-                        },
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                            disabledTextColor = Color.Black,
-                            disabledLabelColor = Color(0xFF2E7D32),
-                            disabledBorderColor = Color(0xFF81C784),
-                            focusedBorderColor = Color(0xFF81C784),
-                            unfocusedBorderColor = Color(0xFF81C784)
-                        )
-                    )
-
-                    DropdownMenu(
-                        expanded = expandedTag,
-                        onDismissRequest = { expandedTag = false }
-                    ) {
-                        tage.forEach { tag ->
-                            DropdownMenuItem(
-                                text = { Text(tag) },
-                                onClick = {
-                                    selectedTag = tag
-                                    expandedTag = false
-                                }
-                            )
-                        }
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Button(
-                    onClick = {
-                        if (ausgewaehlt.isNotEmpty()) {
-                            val jsonArray = ausgewaehlt.map { (produkt, gramm) ->
-                                """
-                {
-                    "produkt":"${produkt.produkt}",
-                    "menge":$gramm,
-                    "kcal":"${produkt.kalorien}",
-                    "fett":"${produkt.fett}",
-                    "eiweiss":"${produkt.eiweiss}",
-                    "kh":"${produkt.kohlenhydrate}",
-                    "glyk_index":"${produkt.glyk_index}"
-                }
-                """.trimIndent()
-                            }.joinToString(separator = ",", prefix = "[", postfix = "]")
-
-                            val plan = Plan(
-                                tag = selectedTag,
-                                erstelltAm = System.currentTimeMillis().toString(),
-                                aktualisiertAm = null,
-                                datenJson = jsonArray,
-                                userId = userId
-                            )
-
-                            coroutineScope.launch {
-                                val existingPlan = planRepository.getPlanByUserAndTag(userId, selectedTag)
-
-                                val planToSave = if (existingPlan != null) {
-                                    plan.copy(
-                                        id = existingPlan.id,
-                                        aktualisiertAm = System.currentTimeMillis().toString()
-                                    )
-                                } else {
-                                    plan
-                                }
-
-                                onSavePlan(planToSave)
-
-                                val firestoreService = FirestorePlanService()
-                                firestoreService.savePlanToFirebase(userEmail, planToSave)
-
-                                ausgewaehlt.clear()
-                                selectedTag = ""
-                                searchQuery = ""
-
-                                snackbarHostState.showSnackbar("Plan erfolgreich gespeichert!")
-
-                            }
-
-                        } else {
-                            coroutineScope.launch {
-                                snackbarHostState.showSnackbar("Bitte zuerst Produkte auswählen.")
-                            }
-                        }
-                    },
-                    enabled = selectedTag.isNotEmpty() && ausgewaehlt.isNotEmpty(),
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF81C784))
-                ) {
-                    Text("Plan speichern", color = Color.White)
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Button(
-                    onClick = {
-                        navController.navigate("saved_plans/$userId/$userEmail")
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE8F5E9))
-                ) {
-                    Text("Meine Tagespläne schauen", color = Color(0xFF2E7D32))
-                }
-            }
-
-            if (expandedSuchfeld) {
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 80.dp)
-                        .align(Alignment.TopCenter),
-                    elevation = CardDefaults.cardElevation(8.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color.White)
-                ) {
-                    LazyColumn(modifier = Modifier.heightIn(max = 300.dp)) {
-                        if (filteredLebensmittelListe.isNotEmpty()) {
+                        LazyColumn(modifier = Modifier.heightIn(max = 300.dp)) {
                             items(filteredLebensmittelListe) { produkt ->
                                 ListItem(
                                     headlineContent = { Text(produkt.produkt) },
@@ -386,77 +215,155 @@ fun PlanScreen(
                                         .padding(horizontal = 8.dp, vertical = 4.dp)
                                 )
                             }
-                        } else {
-                            item {
-                                Text(
-                                    "Keine Ergebnisse gefunden",
-                                    color = Color.Gray,
-                                    modifier = Modifier.padding(16.dp)
-                                )
-                            }
                         }
                     }
                 }
+            }
+
+            Box {
+                OutlinedTextField(
+                    value = selectedTag,
+                    onValueChange = {},
+                    enabled = false,
+                    label = { Text("Tag wählen", color = Color(0xFF2E7D32)) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { expandedTag = true },
+                    trailingIcon = {
+                        Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+                    },
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        disabledTextColor = Color.Black,
+                        disabledLabelColor = Color(0xFF2E7D32),
+                        disabledBorderColor = Color(0xFF81C784),
+                        focusedBorderColor = Color(0xFF81C784),
+                        unfocusedBorderColor = Color(0xFF81C784)
+                    )
+                )
+
+                DropdownMenu(
+                    expanded = expandedTag,
+                    onDismissRequest = { expandedTag = false },
+                    modifier = Modifier
+                        .width(IntrinsicSize.Min) // ⚠️ Schmaler wie in Screenshot 1
+                ) {
+                    tage.forEach { tag ->
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    selectedTag = tag
+                                    expandedTag = false
+                                }
+                                .background(
+                                    if (selectedTag == tag) Color(0xFF2E7D32).copy(alpha = 0.1f)
+                                    else Color.Transparent
+                                )
+                                .padding(horizontal = 12.dp, vertical = 8.dp) // 👉 Hier wirkt es wirklich!
+                        ) {
+                            Text(
+                                text = tag,
+                                color = Color.Black,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                        }
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Button(
+                onClick = {
+                    if (ausgewaehlt.isNotEmpty()) {
+                        val json = ausgewaehlt.joinToString(",", "[", "]") { (p, g) ->
+                            """{"produkt":"${p.produkt}","menge":$g,"kcal":"${p.kalorien}","fett":"${p.fett}","eiweiss":"${p.eiweiss}","kh":"${p.kohlenhydrate}","glyk_index":"${p.glyk_index}"}"""
+                        }
+                        val now = System.currentTimeMillis().toString()
+                        coroutineScope.launch {
+                            val existing = planRepository.getPlanByUserAndTag(userId, selectedTag)
+                            val plan = Plan(
+                                id = existing?.id ?: 0,
+                                tag = selectedTag,
+                                erstelltAm = now,
+                                aktualisiertAm = if (existing != null) now else null,
+                                datenJson = json,
+                                userId = userId
+                            )
+                            onSavePlan(plan)
+                            FirestorePlanService().savePlanToFirebase(userEmail, plan)
+                            ausgewaehlt.clear(); selectedTag = ""; searchQuery = ""
+                            snackbarHostState.showSnackbar("Plan erfolgreich gespeichert!")
+                        }
+                    } else coroutineScope.launch {
+                        snackbarHostState.showSnackbar("Bitte zuerst Produkte auswählen.")
+                    }
+                },
+                enabled = ausgewaehlt.isNotEmpty() && selectedTag.isNotEmpty(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .testTag("saveButton"),     // ← für AndroidTest,
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF81C784))
+            ) {
+                Text("Plan speichern", color = Color.White)
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Button(
+                onClick = {
+                    navController.navigate("saved_plans/$userId/$userEmail")
+                },
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE8F5E9))
+            ) {
+                Text("Meine Tagespläne schauen", color = Color(0xFF2E7D32))
             }
         }
     }
 
     selectedLebensmittel?.let { produkt ->
-        selectedLebensmittel?.let { produkt ->
-            AlertDialog(
-                onDismissRequest = { selectedLebensmittel = null },
-                confirmButton = {
-                    TextButton(onClick = {
-                        val gramm = grammText.toFloatOrNull()
-                        if (gramm != null && gramm > 0) {
-                            ausgewaehlt.add(produkt to gramm)
-                            selectedLebensmittel = null
-                            grammText = ""
-                            grammFehler = false // Reset Fehleranzeige
-                        } else {
-                            grammFehler = true // Zeige Fehlermeldung an
-                        }
-                    }) {
-                        Text("Hinzufügen", color = Color(0xFF81C784))
+        AlertDialog(
+            onDismissRequest = { selectedLebensmittel = null },
+            confirmButton = {
+                TextButton(onClick = {
+                    val gramm = grammText.toFloatOrNull()
+                    if (gramm != null && gramm > 0) {
+                        ausgewaehlt.add(produkt to gramm)
+                        selectedLebensmittel = null; grammText = ""; grammFehler = false
+                    } else {
+                        grammFehler = true
                     }
-                },
-                dismissButton = {
-                    TextButton(onClick = {
-                        selectedLebensmittel = null
-                        grammText = ""
-                    }) {
-                        Text("Abbrechen", color = Color.Red)
-                    }
-                },
-                title = { Text(produkt.produkt) },
-                text = {
-                    OutlinedTextField(
-                        value = grammText,
-                        onValueChange = {
-                            grammText = it
-                            grammFehler = false // Zurücksetzen bei neuer Eingabe
-                        },
-                        label = { Text("Menge in Gramm") },
-                        singleLine = true,
-                        isError = grammFehler,
-                        supportingText = {
-                            if (grammFehler) {
-                                Text("Bitte nur Zahlen eingeben", color = Color.Red)
-                            }
-                        },
-                        modifier = Modifier.focusRequester(grammFocusRequester),
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                            focusedBorderColor = if (grammFehler) Color.Red else Color(0xFF81C784),
-                            unfocusedBorderColor = if (grammFehler) Color.Red else Color(0xFF81C784)
-                        )
+                }) { Text("Hinzufügen", color = Color(0xFF81C784)) }
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    selectedLebensmittel = null; grammText = ""
+                }) { Text("Abbrechen", color = Color.Red) }
+            },
+            title = { Text(produkt.produkt) },
+            text = {
+                OutlinedTextField(
+                    value = grammText,
+                    onValueChange = {
+                        grammText = it; grammFehler = false
+                    },
+                    label = { Text("Menge in Gramm") },
+                    isError = grammFehler,
+                    supportingText = if (grammFehler) {
+                        { Text("Bitte nur Zahlen eingeben", color = Color.Red) }
+                    } else null,
+                    modifier = Modifier.focusRequester(grammFocusRequester),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = if (grammFehler) Color.Red else Color(0xFF81C784),
+                        unfocusedBorderColor = if (grammFehler) Color.Red else Color(0xFF81C784)
                     )
-                }
-            )
-
-            // 🟢 Automatisch Fokus setzen
-            LaunchedEffect(produkt) {
-                grammFocusRequester.requestFocus()
+                )
             }
+        )
+
+        LaunchedEffect(produkt) {
+            grammFocusRequester.requestFocus()
         }
     }
 }

@@ -18,6 +18,12 @@ import com.smartwellness.data.UserRepository
 import com.smartwellness.data.entities.User
 import kotlinx.coroutines.launch
 
+sealed class KontoUiState {
+    data object Loading : KontoUiState()
+    data class Success(val user: User) : KontoUiState()
+    data class Error(val message: String) : KontoUiState()
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MeinKontoScreen(
@@ -32,21 +38,28 @@ fun MeinKontoScreen(
     }
 
     val coroutineScope = rememberCoroutineScope()
-    var user by remember { mutableStateOf<User?>(null) }
-    var isEditing by remember { mutableStateOf(false) }
+    val uiState = remember { mutableStateOf<KontoUiState>(KontoUiState.Loading) }
+    val isEditing = remember { mutableStateOf(false) }
 
-    var email by remember { mutableStateOf("") }
-    var phone by remember { mutableStateOf("") }
-    var birthday by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    val email = remember { mutableStateOf("") }
+    val phone = remember { mutableStateOf("") }
+    val birthday = remember { mutableStateOf("") }
+    val password = remember { mutableStateOf("") }
 
     LaunchedEffect(userId) {
-        userRepository.getUserById(userId)?.let { loadedUser ->
-            user = loadedUser
-            email = loadedUser.email
-            phone = loadedUser.phone ?: ""
-            birthday = loadedUser.geburtstag ?: ""
-            password = loadedUser.password ?: ""
+        try {
+            val user = userRepository.getUserById(userId)
+            if (user != null) {
+                uiState.value = KontoUiState.Success(user)
+                email.value = user.email
+                phone.value = user.phone
+                birthday.value = user.geburtstag
+                password.value = user.password
+            } else {
+                uiState.value = KontoUiState.Error("Nutzer nicht gefunden.")
+            }
+        } catch (e: Exception) {
+            uiState.value = KontoUiState.Error("Fehler beim Laden: ${e.localizedMessage}")
         }
     }
 
@@ -83,54 +96,54 @@ fun MeinKontoScreen(
             )
         }
     ) { innerPadding ->
-        if (user != null) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-                    .padding(16.dp)
-            ) {
-                Text(
-                    "Identität",
-                    fontWeight = FontWeight.Normal,
-                    color = Color(0xFF2E7D32),
-                    fontSize = 18.sp,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
-                InfoRow("Vorname:", user!!.vorname)
-                InfoRow("Nachname:", user!!.nachname)
+        when (val state = uiState.value) {
+            is KontoUiState.Loading -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = Color(0xFF2E7D32))
+                }
+            }
+            is KontoUiState.Error -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text("Fehler: ${state.message}", color = Color.Red)
+                }
+            }
+            is KontoUiState.Success -> {
+                val user = state.user
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding)
+                        .padding(16.dp)
+                ) {
+                    Text("Identität", fontWeight = FontWeight.Normal, color = Color(0xFF2E7D32), fontSize = 19.sp)
 
-                Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
 
-                Text(
-                    "Kontaktdaten",
-                    fontWeight = FontWeight.Normal,
-                    color = Color(0xFF2E7D32),
-                    fontSize = 18.sp,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
+                    InfoRow("Vorname:", user.vorname)
+                    InfoRow("Nachname:", user.nachname)
 
-                EditableField(
-                    label = "E-Mail:",
-                    value = email,
-                    onValueChange = { email = it },
-                    enabled = isEditing
-                )
+                    Spacer(modifier = Modifier.height(16.dp))
 
-                EditableField(
-                    label = "Telefon:",
-                    value = phone,
-                    onValueChange = { newValue ->
-                        phone = newValue.filter { it.isDigit() }
-                    },
-                    enabled = isEditing
-                )
+                    Text("Kontaktdaten", fontWeight = FontWeight.Normal, color = Color(0xFF2E7D32), fontSize = 19.sp)
 
-                EditableField(
-                    label = "Geburtsdatum (TT.MM.JJJJ):",
-                    value = birthday,
-                    onValueChange = { newValue ->
-                        val digitsOnly = newValue.filter { it.isDigit() }
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    EditableField("E-Mail:", email.value, { email.value = it }, isEditing.value)
+                    EditableField("Telefon:", phone.value, {
+                        phone.value = it.filter { ch -> ch.isDigit() }
+                    }, isEditing.value)
+                    EditableField("Geburtsdatum (TT.MM.JJJJ):", birthday.value, {
+                        val digitsOnly = it.filter { c -> c.isDigit() }
                         val truncated = digitsOnly.take(8)
                         val formatted = buildString {
                             truncated.forEachIndexed { index, c ->
@@ -138,49 +151,31 @@ fun MeinKontoScreen(
                                 if (index == 1 || index == 3) append(".")
                             }
                         }
-                        birthday = formatted
-                    },
-                    enabled = isEditing
-                )
+                        birthday.value = formatted
+                    }, isEditing.value)
+                    EditableField("Passwort:", password.value, { password.value = it }, isEditing.value, isPassword = true)
 
-                EditableField(
-                    label = "Passwort:",
-                    value = password,
-                    onValueChange = { password = it },
-                    enabled = isEditing,
-                    isPassword = true
-                )
+                    Spacer(modifier = Modifier.height(16.dp))
 
-                Spacer(modifier = Modifier.height(16.dp))
-
-                if (!isEditing) {
-                    Button(
-                        onClick = { isEditing = true },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.LightGray.copy(alpha = 0.5f)
-                        )
-                    ) {
-                        Text("Bearbeiten", color = Color.Black)
-                    }
-                } else {
-                    Button(
-                        onClick = {
+                    if (!isEditing.value) {
+                        Button(onClick = { isEditing.value = true }, colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray.copy(alpha = 0.5f))) {
+                            Text("Bearbeiten", color = Color.Black)
+                        }
+                    } else {
+                        Button(onClick = {
                             coroutineScope.launch {
                                 userRepository.updateUser(
                                     userId,
-                                    email,
-                                    phone,
-                                    birthday,
-                                    password
+                                    email.value,
+                                    phone.value,
+                                    birthday.value,
+                                    password.value
                                 )
                             }
-                            isEditing = false
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFFA3F18F)
-                        )
-                    ) {
-                        Text("Daten speichern", color = Color.Black)
+                            isEditing.value = false
+                        }, colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFA3F18F))) {
+                            Text("Daten speichern", color = Color.Black)
+                        }
                     }
                 }
             }
@@ -237,20 +232,13 @@ fun NotLoggedInView(navController: NavController) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(
-            "Bitte logge dich ein, um deine Kontodaten zu sehen!",
-            color = Color(0xFFD32F2F),
-            fontWeight = FontWeight.Normal,
-            fontSize = 16.sp
-        )
+        Text("Bitte logge dich ein, um deine Kontodaten zu sehen!", color = Color(0xFFD32F2F), fontWeight = FontWeight.Normal, fontSize = 16.sp)
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = {
                 navController.navigate("login?returnTo=mein_konto")
             },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFFA3F18F)
-            )
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFA3F18F))
         ) {
             Text("Hier einloggen", color = Color.Black)
         }

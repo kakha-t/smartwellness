@@ -47,7 +47,6 @@ fun MoreScreen(
                 .padding(innerPadding)
                 .padding(horizontal = 16.dp, vertical = 16.dp)
         ) {
-            // Mein Konto
             MenuItem(
                 title = "Mein Konto",
                 onClick = {
@@ -59,7 +58,6 @@ fun MoreScreen(
                 }
             )
 
-            // ✅ Hinweis nur anzeigen, wenn nicht eingeloggt
             if (showLoginHint) {
                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -85,16 +83,14 @@ fun MoreScreen(
                 )
             }
 
-            Divider(thickness = 1.dp, color = Color(0xFF81C784))
+            HorizontalDivider(thickness = 1.dp, color = Color(0xFF81C784))
 
-            // Datenschutz
             MenuItem(
                 title = "Datenschutz",
                 onClick = { navController.navigate("datenschutz") }
             )
-            Divider(thickness = 1.dp, color = Color(0xFF81C784))
+            HorizontalDivider(thickness = 1.dp, color = Color(0xFF81C784))
 
-            // Impressum
             MenuItem(
                 title = "Impressum",
                 onClick = { navController.navigate("impressum") }

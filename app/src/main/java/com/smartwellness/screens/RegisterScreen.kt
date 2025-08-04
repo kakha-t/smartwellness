@@ -24,8 +24,22 @@ import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseAuth
 import com.smartwellness.data.dao.UserDao
 import com.smartwellness.data.entities.User
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.*
+
+// --- UI State ---
+data class RegisterUiState(
+    val vorname: String = "",
+    val nachname: String = "",
+    val email: String = "",
+    val phone: String = "",
+    val geburtstag: String = "",
+    val password: String = "",
+    val successMessage: String? = null,
+    val errorMessage: String? = null
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -33,22 +47,14 @@ fun RegisterScreen(
     navController: NavController,
     userDao: UserDao
 ) {
-    var vorname by remember { mutableStateOf("") }
-    var nachname by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var phone by remember { mutableStateOf("") }
-    var geburtstag by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-
-    var successMessage by remember { mutableStateOf<String?>(null) }
-    var errorMessage by remember { mutableStateOf<String?>(null) }
-
+    val stateFlow = remember { MutableStateFlow(RegisterUiState()) }
+    val state by stateFlow.collectAsState()
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
     val auth = remember { FirebaseAuth.getInstance() }
 
     val calendar = Calendar.getInstance()
-    val (initialDay, initialMonth, initialYear) = geburtstag
+    val (initialDay, initialMonth, initialYear) = state.geburtstag
         .split(".")
         .mapNotNull { it.toIntOrNull() }
         .let {
@@ -62,7 +68,8 @@ fun RegisterScreen(
     val datePickerDialog = DatePickerDialog(
         context,
         { _, year, month, dayOfMonth ->
-            geburtstag = String.format("%02d.%02d.%04d", dayOfMonth, month + 1, year)
+            val formatted = String.format("%02d.%02d.%04d", dayOfMonth, month + 1, year)
+            stateFlow.update { it.copy(geburtstag = formatted) }
         },
         initialYear,
         initialMonth,
@@ -70,94 +77,73 @@ fun RegisterScreen(
     )
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
+        modifier = Modifier.fillMaxSize().padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable { navController.navigate("zugang") },
+            modifier = Modifier.fillMaxWidth().clickable { navController.navigate("zugang") },
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                imageVector = Icons.Default.ArrowBack,
-                contentDescription = "Zurück",
-                tint = Color(0xFF4CAF50),
-                modifier = Modifier.size(28.dp)
-            )
+            Icon(Icons.Default.ArrowBack, contentDescription = "Zurück", tint = Color(0xFF4CAF50), modifier = Modifier.size(28.dp))
         }
 
         Spacer(modifier = Modifier.height(16.dp))
         Text("Registrierung", fontWeight = FontWeight.Bold, fontSize = 24.sp)
         Spacer(modifier = Modifier.height(16.dp))
 
-        successMessage?.let {
+        state.successMessage?.let {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    imageVector = Icons.Default.CheckCircle,
-                    contentDescription = "Erfolg",
-                    tint = Color(0xFF4CAF50)
-                )
+                Icon(Icons.Default.CheckCircle, contentDescription = "Erfolg", tint = Color(0xFF4CAF50))
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(it, color = Color(0xFF4CAF50))
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "Jetzt einloggen",
-                    color = Color.Blue,
-                    modifier = Modifier.clickable { navController.navigate("login") }
-                )
+                Text("Jetzt einloggen", color = Color.Blue, modifier = Modifier.clickable { navController.navigate("login") })
             }
             Spacer(modifier = Modifier.height(16.dp))
         }
 
-        errorMessage?.let {
+        state.errorMessage?.let {
             Text("❌ $it", color = Color.Red)
             Spacer(modifier = Modifier.height(16.dp))
         }
 
-        OutlinedTextField(value = vorname, onValueChange = {
-            vorname = it.filter { c -> c.isLetter() || c.isWhitespace() }
+        OutlinedTextField(value = state.vorname, onValueChange = {
+            stateFlow.update { s -> s.copy(vorname = it.filter { c -> c.isLetter() || c.isWhitespace() }) }
         }, label = { Text("Vorname") }, modifier = Modifier.fillMaxWidth())
 
-        OutlinedTextField(value = nachname, onValueChange = {
-            nachname = it.filter { c -> c.isLetter() || c.isWhitespace() }
+        OutlinedTextField(value = state.nachname, onValueChange = {
+            stateFlow.update { s -> s.copy(nachname = it.filter { c -> c.isLetter() || c.isWhitespace() }) }
         }, label = { Text("Nachname") }, modifier = Modifier.fillMaxWidth())
 
-        OutlinedTextField(value = email, onValueChange = { email = it },
-            label = { Text("E-Mail") }, modifier = Modifier.fillMaxWidth())
+        OutlinedTextField(value = state.email, onValueChange = {
+            stateFlow.update { s -> s.copy(email = it) }
+        }, label = { Text("E-Mail") }, modifier = Modifier.fillMaxWidth())
 
-        OutlinedTextField(value = phone, onValueChange = {
-            phone = it.filter { char -> char.isDigit() }
+        OutlinedTextField(value = state.phone, onValueChange = {
+            stateFlow.update { s -> s.copy(phone = it.filter { c -> c.isDigit() }) }
         }, label = { Text("Telefonnummer") }, modifier = Modifier.fillMaxWidth(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number))
 
-        OutlinedTextField(
-            value = geburtstag,
-            onValueChange = { newValue ->
-                val digitsOnly = newValue.filter { it.isDigit() }
-                val truncated = digitsOnly.take(8)
-                val formatted = buildString {
-                    truncated.forEachIndexed { index, c ->
-                        append(c)
-                        if (index == 1 || index == 3) append(".")
-                    }
+        OutlinedTextField(value = state.geburtstag, onValueChange = {
+            val digits = it.filter { c -> c.isDigit() }.take(8)
+            val formatted = buildString {
+                digits.forEachIndexed { index, c ->
+                    append(c)
+                    if (index == 1 || index == 3) append(".")
                 }
-                geburtstag = formatted
-            },
-            label = { Text("Geburtsdatum (TT.MM.JJJJ)") },
-            modifier = Modifier.fillMaxWidth(),
+            }
+            stateFlow.update { s -> s.copy(geburtstag = formatted) }
+        }, label = { Text("Geburtsdatum (TT.MM.JJJJ)") }, modifier = Modifier.fillMaxWidth(),
             trailingIcon = {
                 IconButton(onClick = { datePickerDialog.show() }) {
-                    Icon(Icons.Default.DateRange, "Datum auswählen", tint = Color(0xFF4CAF50))
+                    Icon(Icons.Default.DateRange, contentDescription = "Datum auswählen", tint = Color(0xFF4CAF50))
                 }
             },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-        )
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number))
 
-        OutlinedTextField(value = password, onValueChange = { password = it },
-            label = { Text("Passwort") }, modifier = Modifier.fillMaxWidth(),
+        OutlinedTextField(value = state.password, onValueChange = {
+            stateFlow.update { s -> s.copy(password = it) }
+        }, label = { Text("Passwort") }, modifier = Modifier.fillMaxWidth(),
             visualTransformation = PasswordVisualTransformation())
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -166,20 +152,16 @@ fun RegisterScreen(
             onClick = {
                 coroutineScope.launch {
                     val datePattern = Regex("""\d{2}\.\d{2}\.\d{4}""")
-                    if (
-                        vorname.isBlank() || nachname.isBlank() || email.isBlank() ||
-                        phone.isBlank() || geburtstag.isBlank() || password.isBlank()
-                    ) {
-                        errorMessage = "Bitte fülle alle Felder aus!"
-                        successMessage = null
+                    if (state.vorname.isBlank() || state.nachname.isBlank() || state.email.isBlank() ||
+                        state.phone.isBlank() || state.geburtstag.isBlank() || state.password.isBlank()) {
+                        stateFlow.update { it.copy(errorMessage = "Bitte fülle alle Felder aus!", successMessage = null) }
                         return@launch
-                    } else if (!datePattern.matches(geburtstag)) {
-                        errorMessage = "Bitte ein gültiges Datum im Format TT.MM.JJJJ eingeben!"
-                        successMessage = null
+                    } else if (!datePattern.matches(state.geburtstag)) {
+                        stateFlow.update { it.copy(errorMessage = "Bitte ein gültiges Datum im Format TT.MM.JJJJ eingeben!", successMessage = null) }
                         return@launch
                     }
 
-                    auth.createUserWithEmailAndPassword(email.trim(), password.trim())
+                    auth.createUserWithEmailAndPassword(state.email.trim(), state.password.trim())
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
                                 coroutineScope.launch {
@@ -188,12 +170,12 @@ fun RegisterScreen(
                                         val nextId = maxId + 1
                                         val user = User(
                                             id = nextId,
-                                            vorname = vorname.trim(),
-                                            nachname = nachname.trim(),
-                                            email = email.trim(),
-                                            phone = phone.trim(),
-                                            geburtstag = geburtstag.trim(),
-                                            password = password.trim()
+                                            vorname = state.vorname.trim(),
+                                            nachname = state.nachname.trim(),
+                                            email = state.email.trim(),
+                                            phone = state.phone.trim(),
+                                            geburtstag = state.geburtstag.trim(),
+                                            password = state.password.trim()
                                         )
                                         val userId = userDao.insertUser(user).toInt()
 
@@ -212,44 +194,32 @@ fun RegisterScreen(
                                             .collection("users")
                                             .document(user.email)
                                             .set(userMap)
-                                            .addOnSuccessListener {
-                                                Log.d("Register", "✅ Firestore erfolgreich gespeichert")
-                                            }
-                                            .addOnFailureListener {
-                                                Log.e("Register", "❌ Firestore Fehler", it)
-                                            }
 
-                                        successMessage = "Registrierung erfolgreich!"
-                                        errorMessage = null
+                                        stateFlow.update { it.copy(successMessage = "Registrierung erfolgreich!", errorMessage = null) }
 
                                     } catch (e: Exception) {
-                                        errorMessage = "Fehler beim Speichern des Benutzers."
-                                        successMessage = null
-                                        Log.e("Register", "❌ Fehler", e)
+                                        Log.e("Register", "Fehler", e)
+                                        stateFlow.update { it.copy(errorMessage = "Fehler beim Speichern des Benutzers.", successMessage = null) }
                                     }
                                 }
                             } else {
-                                val firebaseMessage = task.exception?.message ?: "Fehler bei der Registrierung"
-
-                                errorMessage = when {
-                                    firebaseMessage.contains("least 6 characters", ignoreCase = true) ->
-                                        "Das Passwort muss mindestens 6 Zeichen lang sein!"
-                                    firebaseMessage.contains("email address is badly formatted", ignoreCase = true) ->
-                                        "Ungültige E-Mail-Adresse!"
-                                    firebaseMessage.contains("already in use", ignoreCase = true) ->
-                                        "Diese E-Mail ist bereits registriert!"
-                                    else ->
-                                        "Registrierung fehlgeschlagen – bitte Eingaben prüfen."
+                                val msg = task.exception?.message ?: "Fehler bei der Registrierung"
+                                val error = when {
+                                    msg.contains("least 6 characters", true) -> "Das Passwort muss mindestens 6 Zeichen lang sein!"
+                                    msg.contains("badly formatted", true) -> "Ungültige E-Mail-Adresse!"
+                                    msg.contains("already in use", true) -> "Diese E-Mail ist bereits registriert!"
+                                    else -> "Registrierung fehlgeschlagen – bitte Eingaben prüfen."
                                 }
-
-                                successMessage = null
                                 Log.e("Register", "Firebase registration failed", task.exception)
+                                stateFlow.update { it.copy(errorMessage = error, successMessage = null) }
                             }
                         }
                 }
             },
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFA3F18F)),
-            modifier = Modifier.fillMaxWidth().height(48.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp)
         ) {
             Text("Registrieren", color = Color.Black, fontWeight = FontWeight.Bold)
         }
@@ -260,10 +230,16 @@ fun RegisterScreen(
             Text("Schon registriert?")
             Spacer(modifier = Modifier.width(4.dp))
             Text(
-                text = "Hier anmelden",
+                "Hier anmelden",
                 color = Color.Blue,
-                modifier = Modifier.clickable { navController.navigate("login") }
+                modifier = Modifier.clickable {
+                    navController.navigate("login")
+                }
             )
         }
+
     }
+
 }
+
+

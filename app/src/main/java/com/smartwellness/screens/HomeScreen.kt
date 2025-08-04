@@ -10,8 +10,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -37,15 +37,13 @@ fun HomeScreen(navController: NavController) {
                 contentDescription = "SmartWellness Logo",
                 modifier = Modifier
                     .height(150.dp)
-                    .padding(top = 0.dp)    // HIER KEIN PADDING
+                    .padding(top = 0.dp)
                     .fillMaxWidth(),
                 contentScale = ContentScale.Inside
             )
         }
 
-        item {
-            Spacer(modifier = Modifier.height(24.dp))
-        }
+        item { Spacer(modifier = Modifier.height(24.dp)) }
 
         item {
             Box(
@@ -66,9 +64,9 @@ fun HomeScreen(navController: NavController) {
                         fontSize = 16.sp
                     )
                     Spacer(modifier = Modifier.height(16.dp))
-                    BulletPoint("✅ Ernährungsplänen und Rezepten: Individuell auf deine Bedürfnisse und Vorlieben abgestimmt.")
-                    BulletPoint("✅ Vielseitige Trainingsmöglichkeiten: Yoga, Aqua-Training, Pilates, Kraft- und Ausdauertraining.")
-                    BulletPoint("✅ Individuelle Planerstellung: Stelle dir deinen eigenen Ernährungs- und Trainingsplan zusammen – täglich oder wöchentlich.")
+                    BulletPoint("Ernährungspläne und Rezepten: Individuell auf deine Bedürfnisse und Vorlieben abgestimmt.")
+                    BulletPoint("Vielseitige Trainingsmöglichkeiten: Yoga, Aqua-Training, Pilates, Kraft- und Ausdauertraining.")
+                    BulletPoint("Individuelle Planerstellung: Stelle dir deinen eigenen Ernährungs- und Trainingsplan zusammen – täglich oder wöchentlich.")
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
                         text = "Starte noch heute und entdecke dein volles Potenzial!",
@@ -79,9 +77,7 @@ fun HomeScreen(navController: NavController) {
             }
         }
 
-        item {
-            Spacer(modifier = Modifier.height(24.dp))
-        }
+        item { Spacer(modifier = Modifier.height(24.dp)) }
 
         item {
             Text(
@@ -91,12 +87,11 @@ fun HomeScreen(navController: NavController) {
             )
         }
 
-        item {
-            Spacer(modifier = Modifier.height(16.dp))
-        }
+        item { Spacer(modifier = Modifier.height(16.dp)) }
 
         item {
             LazyRow(
+                contentPadding = PaddingValues(horizontal = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 items(categoryItems) { category ->
@@ -110,19 +105,17 @@ fun HomeScreen(navController: NavController) {
             }
         }
 
-        item {
-            Spacer(modifier = Modifier.height(24.dp))
-        }
+        item { Spacer(modifier = Modifier.height(24.dp)) }
     }
 }
 
 @Composable
 fun BulletPoint(text: String) {
-    Text(
-        text = text,
-        fontSize = 16.sp,
-        modifier = Modifier.padding(bottom = 8.dp)
-    )
+    Row(modifier = Modifier.fillMaxWidth().padding(start = 8.dp)) {
+        Text("\u2022", fontSize = 18.sp, color = Color(0xFF4CAF50))
+        Spacer(modifier = Modifier.width(6.dp))
+        Text(text = text, fontSize = 16.sp)
+    }
 }
 
 @Composable
@@ -138,8 +131,7 @@ fun CategoryCard(
             .width(180.dp)
             .height(220.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color(0xFFE8F5E9))
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFE8F5E9))
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),

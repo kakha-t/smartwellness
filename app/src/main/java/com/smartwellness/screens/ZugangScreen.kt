@@ -1,6 +1,7 @@
 package com.smartwellness.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -13,12 +14,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.compose.foundation.clickable
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 
+// UI State-Klasse für Zugang
+data class ZugangUiState(
+    val datenschutzAccepted: Boolean = false
+)
 
 @Composable
 fun ZugangScreen(navController: NavController) {
-    var datenschutzAccepted by remember { mutableStateOf(false) }
+    val stateFlow = remember { MutableStateFlow(ZugangUiState()) }
+    val state by stateFlow.collectAsState()
 
     Column(
         modifier = Modifier
@@ -44,7 +51,6 @@ fun ZugangScreen(navController: NavController) {
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Box grün hinterlegt
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -64,7 +70,7 @@ fun ZugangScreen(navController: NavController) {
 
                 Button(
                     onClick = { navController.navigate("register") },
-                    enabled = datenschutzAccepted,
+                    enabled = state.datenschutzAccepted,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color(0xFFA3F18F),
                         disabledContainerColor = Color(0xFFA3F18F).copy(alpha = 0.5f)
@@ -85,7 +91,7 @@ fun ZugangScreen(navController: NavController) {
 
                 Button(
                     onClick = { navController.navigate("login") },
-                    enabled = datenschutzAccepted,
+                    enabled = state.datenschutzAccepted,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.LightGray,
                         disabledContainerColor = Color.LightGray.copy(alpha = 0.5f)
@@ -100,8 +106,10 @@ fun ZugangScreen(navController: NavController) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Checkbox(
-                        checked = datenschutzAccepted,
-                        onCheckedChange = { datenschutzAccepted = it },
+                        checked = state.datenschutzAccepted,
+                        onCheckedChange = { checked ->
+                            stateFlow.update { it.copy(datenschutzAccepted = checked) }
+                        },
                         colors = CheckboxDefaults.colors(
                             checkedColor = Color(0xFFA3F18F)
                         )
