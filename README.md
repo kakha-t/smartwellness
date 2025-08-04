@@ -69,18 +69,14 @@ Für Fortgeschrittene und alle, die mehr Kontrolle wünschen, bietet die App ein
 
 Hier ein kurzer Einblick in die SmartWellness-App:
 
-| Home                  | Ernährung              | Fitness                 | Plan                   |
-|-----------------------|------------------------|-------------------------|------------------------|
-| ![HomeScreen](docs/screenshots/home.png) | ![NutritionScreen](docs/screenshots/nutrition.png) | ![FitnessScreen](docs/screenshots/fitness.png) | ![PlanScreen](docs/screenshots/plan.png) |
+| Home | Ernährung | Fitness | Plan |
+|------|-----------|---------|------|
+| <img src="docs/home.png" alt="HomeScreen" width="150" /> | <img src="docs/nutrition.png" alt="NutritionScreen" width="150" /> | <img src="docs/fitness.png" alt="FitnessScreen" width="150" /> | <img src="docs/plan.png" alt="PlanScreen" width="150" /> |
 
 1. **Home:** Begrüßung, Wellen-Hintergrund und „Beliebte Kategorien“  
 2. **Ernährungsangebote:** Liste externer Rezept- und Tipps-Webseiten  
 3. **Fitness & Bewegung:** Anbieter-Kacheln mit Yoga, Aquatraining usw.  
 4. **Plan:** Interaktiver Planer mit automatischer Kalorien- und Nährwert-Berechnung  
-
-> **Hinweis:** Lege deine Screenshots unter `docs/screenshots/` ab und passe die Pfade entsprechend an.
-
----
 
 ## Getting Started / Installation
 
