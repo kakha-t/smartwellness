@@ -168,12 +168,6 @@ Die Ordner- und Paketstruktur ist so aufgebaut, dass **UI**, **Datenzugriff**, *
 
 ---
 
-### `com.smartwellness.ui.theme`
-**Zweck:** Farbschema, Typographie, Thema.  
-Hier liegt die zentrale Design-Konfiguration (Material 3), damit alle Screens einheitlich aussehen.
-
----
-
 ### `com.smartwellness.entities`
 **Zweck:** **Domänen-Modelle** – einfache Datenklassen ohne Android-Abhängigkeit.  
 - **`Plan`** – gespeicherter Tagesplan (Tag, Zeitstempel, JSON-Daten, `userId`).  
