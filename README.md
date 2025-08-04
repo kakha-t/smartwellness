@@ -213,6 +213,16 @@ Die Ordner- und Paketstruktur ist so aufgebaut, dass **UI**, **Datenzugriff**, *
 
 ---
 
+### `MainActivity.kt`
+Die zentrale Einstiegsklasse der App.  
+- Initialisiert **Firebase** beim Start (`FirebaseApp.initializeApp`).  
+- Baut die **lokale Room-Datenbank** auf und stellt sie global zur Verfügung (`DatabaseHolder`).  
+- Importiert bei Bedarf initiale Daten (z. B. Lebensmittelkatalog über `LebensmittelImporter`).  
+- Startet die Compose-UI, indem das definierte App-Theme geladen und die **Navigation** initialisiert wird.  
+- Kümmert sich um App-weite Ressourcen, die nur einmal beim Start gesetzt werden müssen.
+
+---
+
 ### `res/` (Ressourcen)
 **Zweck:** Bilder/Icons, Strings, Layout-unabhängige Ressourcen.  
 - App-Logo, Kachel-Bilder, Icons.  
