@@ -1,5 +1,5 @@
 ## Projekt Titel  
-**SmartWellness**
+**SmartWellness** (Meine Android-App für das Kotlin-Prüfungsprojekt)
 
 ## Beschreibung  
 SmartWellness ist deine All-in-One-Android-App für gesunde Ernährung, Fitness und Stressabbau. Mit modernem Jetpack-Compose-UI, lokaler Room-Datenbank und Firebase-Sync bringt sie dir Rezepte, Trainingsangebote und personalisierte Pläne direkt auf dein Smartphone.
