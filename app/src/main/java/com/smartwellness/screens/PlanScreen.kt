@@ -245,7 +245,7 @@ fun PlanScreen(
                     expanded = expandedTag,
                     onDismissRequest = { expandedTag = false },
                     modifier = Modifier
-                        .width(IntrinsicSize.Min) // ⚠️ Schmaler wie in Screenshot 1
+                        .width(IntrinsicSize.Min) 
                 ) {
                     tage.forEach { tag ->
                         Box(
